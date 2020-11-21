@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StatusBar,
   View,
@@ -6,12 +6,14 @@ import {
   Image,
   Dimensions,
   Text,
+  ScrollView,
 } from "react-native";
 import { format } from "date-fns";
 
-import { ConversionInput } from "../components/ConversionInput";
-
 import colors from "../constants/colors";
+import { ConversionInput } from "../components/ConversionInput";
+import { Button } from "../components/Button";
+import { KeyboardSpacer } from "../components/KeyboardSpacer";
 
 const screen = Dimensions.get("window");
 
@@ -20,11 +22,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.blue,
     justifyContent: "center",
+    paddingTop: 25,
   },
   headerText: {
-    marginBottom: 30,
     textAlign: "center",
-    fontSize: 23,
+    marginBottom: 14,
+    fontSize: 25,
     color: colors.white,
     textShadowColor: "#ffbb00",
     textShadowOffset: {
@@ -68,6 +71,8 @@ export default () => {
   const conversionRate = 0.8765;
   const date = new Date();
 
+  const [scroll, setScroll] = useState(false);
+
   const onButtonPress = () => {
     alert("Pressed!");
   };
@@ -76,41 +81,56 @@ export default () => {
     alert("Text: " + text);
   };
 
+  const handleReverseBtn = () => {
+    alert("Reverse Activated!");
+  };
+
+  const keyboardToggle = (activateScroll) => {
+    setScroll(activateScroll);
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={colors.blue} />
-      <Text style={styles.headerText}>Currency Checker</Text>
 
-      <View style={styles.imagesContainer}>
-        <Image
-          style={styles.logoBg}
-          source={require("../assets/images/background.png")}
+      <ScrollView scrollEnabled={scroll}>
+        <View style={styles.imagesContainer}>
+          <Image
+            style={styles.logoBg}
+            source={require("../assets/images/background.png")}
+          />
+          <Image
+            style={styles.logo}
+            source={require("../assets/images/logo.png")}
+          />
+        </View>
+
+        <Text style={styles.headerText}>Currency Checker</Text>
+
+        <ConversionInput
+          keyboardType="numeric"
+          onChangeText={onChangeText}
+          text={baseCurrency}
+          value="123"
+          onButtonPress={onButtonPress}
         />
-        <Image
-          style={styles.logo}
-          source={require("../assets/images/logo.png")}
+        <ConversionInput
+          onChangeText={onChangeText}
+          text={quoteCurrency}
+          value="123"
+          onButtonPress={onButtonPress}
+          editable={false}
         />
-      </View>
-      <ConversionInput
-        keyboardType="numeric"
-        onChangeText={onChangeText}
-        text={baseCurrency}
-        value="123"
-        onButtonPress={onButtonPress}
-      />
-      <ConversionInput
-        onChangeText={onChangeText}
-        text={quoteCurrency}
-        value="123"
-        onButtonPress={onButtonPress}
-        editable={false}
-      />
-      <Text style={styles.text}>
-        {`1 ${baseCurrency} = ${conversionRate} ${quoteCurrency} as of ${format(
-          date,
-          "MMM do, yyyy"
-        )}`}
-      </Text>
+        <Text style={styles.text}>
+          {`1 ${baseCurrency} = ${conversionRate} ${quoteCurrency} as of ${format(
+            date,
+            "MMM do, yyyy"
+          )}`}
+        </Text>
+
+        <Button text="Reverse Currencies" onPress={handleReverseBtn} />
+        <KeyboardSpacer onToggle={keyboardToggle} />
+      </ScrollView>
     </View>
   );
 };
