@@ -1,6 +1,7 @@
 import React from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
-import Home from "./screens/Home";
+
+import Navigation from "./config/Navigation";
 
 const styles = StyleSheet.create({
   app: {
@@ -11,7 +12,7 @@ const styles = StyleSheet.create({
 
 const App = () => (
   <SafeAreaView style={styles.app}>
-    <Home />
+    <Navigation />
   </SafeAreaView>
 );
 

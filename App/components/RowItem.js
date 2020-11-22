@@ -24,7 +24,10 @@ const styles = StyleSheet.create({
 
 export const RowItem = ({ title, iconRight, onPress }) => {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.row}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.row, , { justifyContent: !iconRight && "center" }]}
+    >
       <Text style={styles.title}>{title}</Text>
       {iconRight}
     </TouchableOpacity>

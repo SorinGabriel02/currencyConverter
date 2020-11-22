@@ -22,8 +22,6 @@ export const KeyboardSpacer = ({ onToggle }) => {
       // the height of the keyboard
       const endY = event.endCoordinates.screenY;
       const screenHeight = Dimensions.get("window").height;
-      console.log(screenHeight, endY);
-
       // when keyboard shows add extra height to the screen
       // and make it scroll-able
       setKeyboardHeight(screenHeight - endY + 20);

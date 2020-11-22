@@ -7,8 +7,10 @@ import {
   Dimensions,
   Text,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { format } from "date-fns";
+import { Entypo } from "@expo/vector-icons";
 
 import colors from "../constants/colors";
 import { ConversionInput } from "../components/ConversionInput";
@@ -22,7 +24,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.blue,
     justifyContent: "center",
-    paddingTop: 25,
+    paddingTop: 15,
   },
   headerText: {
     textAlign: "center",
@@ -58,6 +60,14 @@ const styles = StyleSheet.create({
     height: screen.height * 0.3,
     resizeMode: "contain",
   },
+  optionsBtn: {
+    alignSelf: "flex-end",
+    marginRight: 20,
+    width: 42,
+  },
+  optionsIcon: {
+    color: colors.white,
+  },
   text: {
     textAlign: "center",
     color: colors.white,
@@ -65,7 +75,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default () => {
+export default ({ route, navigation }) => {
   const baseCurrency = "USD";
   const quoteCurrency = "GBP";
   const conversionRate = 0.8765;
@@ -73,8 +83,8 @@ export default () => {
 
   const [scroll, setScroll] = useState(false);
 
-  const onButtonPress = () => {
-    alert("Pressed!");
+  const onButtonPress = (title) => {
+    navigation.navigate("Currency List", { title });
   };
 
   const onChangeText = (text) => {
@@ -91,8 +101,16 @@ export default () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.blue} />
+      <StatusBar barStyle="dark-content" backgroundColor={colors.blue} />
 
+      <View>
+        <TouchableOpacity
+          style={styles.optionsBtn}
+          onPress={() => navigation.push("Options")}
+        >
+          <Entypo style={styles.optionsIcon} name="cog" size={38} />
+        </TouchableOpacity>
+      </View>
       <ScrollView scrollEnabled={scroll}>
         <View style={styles.imagesContainer}>
           <Image
@@ -112,13 +130,13 @@ export default () => {
           onChangeText={onChangeText}
           text={baseCurrency}
           value="123"
-          onButtonPress={onButtonPress}
+          onButtonPress={() => onButtonPress("Base Currency")}
         />
         <ConversionInput
           onChangeText={onChangeText}
           text={quoteCurrency}
           value="123"
-          onButtonPress={onButtonPress}
+          onButtonPress={() => onButtonPress("Quote Currency")}
           editable={false}
         />
         <Text style={styles.text}>
