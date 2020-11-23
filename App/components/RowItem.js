@@ -7,7 +7,6 @@ const styles = StyleSheet.create({
   row: {
     paddingHorizontal: 20,
     paddingVertical: 16,
-    justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
     backgroundColor: colors.white,
@@ -15,6 +14,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.text,
     fontSize: 16,
+    paddingHorizontal: 20,
   },
   separator: {
     backgroundColor: colors.border,
@@ -22,11 +22,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export const RowItem = ({ title, iconRight, onPress }) => {
+export const RowItem = ({ title, iconRight, onPress, fromRoute }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.row, , { justifyContent: !iconRight && "center" }]}
+      style={[
+        styles.row,
+        {
+          justifyContent: fromRoute === "Options" ? "space-between" : "center",
+        },
+      ]}
     >
       <Text style={styles.title}>{title}</Text>
       {iconRight}

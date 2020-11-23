@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   StatusBar,
   View,
@@ -8,6 +8,8 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import { format } from "date-fns";
 import { Entypo } from "@expo/vector-icons";
@@ -16,6 +18,7 @@ import colors from "../constants/colors";
 import { ConversionInput } from "../components/ConversionInput";
 import { Button } from "../components/Button";
 import { KeyboardSpacer } from "../components/KeyboardSpacer";
+import { ConversionContext } from "../utils/ConversionContext";
 
 const screen = Dimensions.get("window");
 
@@ -76,23 +79,30 @@ const styles = StyleSheet.create({
 });
 
 export default ({ route, navigation }) => {
-  const baseCurrency = "USD";
-  const quoteCurrency = "GBP";
-  const conversionRate = 0.8765;
-  const date = new Date();
+  const {
+    baseCurrency,
+    setBaseCurrency,
+    quoteCurrency,
+    setQuoteCurrency,
+    exchangeRate,
+    date,
+    isLoading,
+  } = useContext(ConversionContext);
 
   const [scroll, setScroll] = useState(false);
+  const [input, setInput] = useState("1");
 
   const onButtonPress = (title) => {
     navigation.navigate("Currency List", { title });
   };
 
-  const onChangeText = (text) => {
-    alert("Text: " + text);
+  const onChangeText = (value) => {
+    setInput(value);
   };
 
   const handleReverseBtn = () => {
-    alert("Reverse Activated!");
+    setBaseCurrency(quoteCurrency);
+    setQuoteCurrency(baseCurrency);
   };
 
   const keyboardToggle = (activateScroll) => {
@@ -102,7 +112,6 @@ export default ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.blue} />
-
       <View>
         <TouchableOpacity
           style={styles.optionsBtn}
@@ -125,28 +134,36 @@ export default ({ route, navigation }) => {
 
         <Text style={styles.headerText}>Currency Checker</Text>
 
-        <ConversionInput
-          keyboardType="numeric"
-          onChangeText={onChangeText}
-          text={baseCurrency}
-          value="123"
-          onButtonPress={() => onButtonPress("Base Currency")}
-        />
-        <ConversionInput
-          onChangeText={onChangeText}
-          text={quoteCurrency}
-          value="123"
-          onButtonPress={() => onButtonPress("Quote Currency")}
-          editable={false}
-        />
-        <Text style={styles.text}>
-          {`1 ${baseCurrency} = ${conversionRate} ${quoteCurrency} as of ${format(
-            date,
-            "MMM do, yyyy"
-          )}`}
-        </Text>
+        {isLoading ? (
+          <ActivityIndicator size="large" color={colors.white} />
+        ) : (
+          <React.Fragment>
+            <ConversionInput
+              keyboardType="numeric"
+              onChangeText={onChangeText}
+              text={baseCurrency}
+              value={input}
+              onButtonPress={() => onButtonPress("Base Currency")}
+            />
+            <ConversionInput
+              onChangeText={onChangeText}
+              text={quoteCurrency}
+              value={
+                input ? `${(parseFloat(input) * exchangeRate).toFixed(2)}` : "0"
+              }
+              onButtonPress={() => onButtonPress("Quote Currency")}
+              editable={false}
+            />
+            <Text style={styles.text}>
+              {`1 ${baseCurrency} = ${exchangeRate} ${quoteCurrency} as of ${format(
+                date,
+                "MMM do, yyyy"
+              )}`}
+            </Text>
 
-        <Button text="Reverse Currencies" onPress={handleReverseBtn} />
+            <Button text="Reverse Currencies" onPress={handleReverseBtn} />
+          </React.Fragment>
+        )}
         <KeyboardSpacer onToggle={keyboardToggle} />
       </ScrollView>
     </View>

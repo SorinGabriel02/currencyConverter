@@ -15,6 +15,7 @@ export default () => {
   return (
     <ScrollView>
       <RowItem
+        fromRoute="Options"
         onPress={() => alert("Why press?!?")}
         title={"Themes"}
         iconRight={
@@ -23,12 +24,14 @@ export default () => {
       />
       <Separator />
       <RowItem
+        fromRoute="Options"
         onPress={() => goToUrl("https://google.com")}
         title={"Google it"}
         iconRight={<Entypo name="export" size={20} color={colors.blue} />}
       />
       <Separator />
       <RowItem
+        fromRoute="Options"
         onPress={() => goToUrl("https://gabidev.me")}
         title={"See my portfolio"}
         iconRight={<Entypo name="export" size={20} color={colors.blue} />}
